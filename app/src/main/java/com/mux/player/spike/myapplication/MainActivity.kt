@@ -1,16 +1,18 @@
 package com.mux.player.spike.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import com.theoplayer.android.api.THEOplayerView
+import com.theoplayer.android.api.ads.ima.GoogleImaIntegrationFactory
+import com.theoplayer.android.api.event.ads.AdsEventTypes
 import com.theoplayer.android.api.event.player.PlayerEventTypes
-import com.theoplayer.android.api.event.player.PlayingEvent
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.source.SourceDescription
 import com.theoplayer.android.api.source.SourceType
 import com.theoplayer.android.api.source.TypedSource
-import com.theoplayer.android.api.source.addescription.THEOplayerAdDescription
+import com.theoplayer.android.api.source.addescription.GoogleImaAdDescription
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     theoPlayerView = findViewById(R.id.theoplayer)
-    listenToPlayer(player)
+    setupPlayer(player)
 
     playPauseToggle = findViewById<ImageButton>(R.id.playpause)
     playPauseToggle.setOnClickListener {
@@ -56,12 +58,25 @@ class MainActivity : AppCompatActivity() {
     super.onDestroy()
   }
 
-  private fun listenToPlayer(player: Player) {
+  private fun setupPlayer(player: Player) {
+    player.addIntegration(GoogleImaIntegrationFactory.createGoogleImaIntegration(theoPlayerView))
     player.addEventListener(PlayerEventTypes.PAUSE) {
       playPauseToggle.setImageResource(android.R.drawable.ic_media_play)
     }
     player.addEventListener(PlayerEventTypes.PLAY) {
      playPauseToggle.setImageResource(android.R.drawable.ic_media_pause)
+    }
+    player.ads.addEventListener(AdsEventTypes.AD_BREAK_BEGIN) {
+      Log.d("ADAD", "event ${it.type}")
+    }
+    player.ads.addEventListener(AdsEventTypes.AD_BEGIN) {
+      Log.d("ADAD", "event ${it.type}")
+    }
+    player.ads.addEventListener(AdsEventTypes.AD_END) {
+      Log.d("ADAD", "event ${it.type}")
+    }
+    player.ads.addEventListener(AdsEventTypes.AD_BREAK_END) {
+      Log.d("ADAD", "event ${it.type}")
     }
   }
 
@@ -70,7 +85,7 @@ class MainActivity : AppCompatActivity() {
       TypedSource.Builder(TEST_STREAM_URL)
         .type(SourceType.HLS)
         .let { SourceDescription.Builder(it.build()) }
-        .ads(THEOplayerAdDescription.Builder(TEST_VMAP).build())
+        .ads( GoogleImaAdDescription.Builder(TEST_VMAP).build() )
         .build();
 
     player.source = sourceDesc
