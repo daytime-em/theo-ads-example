@@ -67,15 +67,19 @@ class MainActivity : AppCompatActivity() {
      playPauseToggle.setImageResource(android.R.drawable.ic_media_pause)
     }
     player.ads.addEventListener(AdsEventTypes.AD_BREAK_BEGIN) {
+      // not called?
       Log.d("ADAD", "event ${it.type}")
     }
     player.ads.addEventListener(AdsEventTypes.AD_BEGIN) {
+      // not called?
       Log.d("ADAD", "event ${it.type}")
     }
     player.ads.addEventListener(AdsEventTypes.AD_END) {
+      // not called?
       Log.d("ADAD", "event ${it.type}")
     }
     player.ads.addEventListener(AdsEventTypes.AD_BREAK_END) {
+      // not called?
       Log.d("ADAD", "event ${it.type}")
     }
   }
